@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Framework/">
+    <Project Path="Testerzy.Trainings.Romanum.Framework.Common/Testerzy.Trainings.Romanum.Framework.Common.csproj" />
+    <Project Path="Testerzy.Trainings.Romanum.Framework.Configuration/Testerzy.Trainings.Romanum.Framework.Configuration.csproj" />
+    <Project Path="Testerzy.Trainings.Romanum.Framework.Api/Testerzy.Trainings.Romanum.Framework.Api.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Testerzy.Trainings.Romanum.Api/Testerzy.Trainings.Romanum.Api.csproj" Id="b1c302b4-3a43-43b0-a7fb-158d37b1b175" />
+    <Project Path="Testerzy.Trainings.Romanum.UI/Testerzy.Trainings.Romanum.UI.csproj" />
+  </Folder>
+</Solution>
