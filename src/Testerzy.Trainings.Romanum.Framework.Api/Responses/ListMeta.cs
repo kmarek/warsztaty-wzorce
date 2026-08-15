@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Testerzy.Trainings.Romanum.Framework.Api.Responses;
 
-public sealed class ContactListMeta
+public sealed class ListMeta
 {
     [JsonPropertyName("page")]
     public int Page { get; init; }

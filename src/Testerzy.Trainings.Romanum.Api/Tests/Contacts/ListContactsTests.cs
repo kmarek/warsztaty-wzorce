@@ -7,14 +7,11 @@ using Testerzy.Trainings.Romanum.Framework.Configuration.Models;
 
 namespace Testerzy.Trainings.Romanum.Api.Tests.Contacts;
 
-public class ListContactsTests : BaseApiTest
+public class ListContactsTests : ContactTestsBase
 {
     [Test]
     public void Verify_ContactsListCanBeRetrieved()
     {
-        var account = Settings.TestData.Accounts.First(u => u.Type == AccountType.Administrator);
-        var tokens = OAuthTokenClient.GetTokenByPassword(account.Username, account.Password);
-
         RestRequest createRequest = new("/api/v1/contacts", Method.Post);
         PostContactRequest createBody = new()
         {
@@ -27,22 +24,23 @@ public class ListContactsTests : BaseApiTest
             AgeGroupIds = []
         };
         createRequest.AddJsonBody(createBody);
-        AddAuthHeaders(createRequest, tokens.AccessToken);
+        AddAuthHeaders(createRequest, AdminAccessToken);
 
         RestResponse<ContactResponse> createResponse = RestClient.Execute<ContactResponse>(createRequest);
         createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         var contactId = createResponse.Data!.Id;
+        TrackContactForCleanup(contactId);
 
         RestRequest listRequest = new("/api/v1/contacts", Method.Get);
         listRequest.AddQueryParameter("page", "1");
         listRequest.AddQueryParameter("pageSize", "100");
-        AddAuthHeaders(listRequest, tokens.AccessToken);
+        AddAuthHeaders(listRequest, AdminAccessToken);
 
-        RestResponse<ContactListResponse> listResponse = RestClient.Execute<ContactListResponse>(listRequest);
+        RestResponse<PagedResponse<ContactResponse>> listResponse = RestClient.Execute<PagedResponse<ContactResponse>>(listRequest);
         Console.WriteLine(listResponse.Content);
         listResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        ContactListResponse? contactList = listResponse.Data;
+        PagedResponse<ContactResponse>? contactList = listResponse.Data;
         contactList.Should().NotBeNull();
         contactList!.Meta.Page.Should().Be(1);
         contactList.Meta.PageSize.Should().Be(100);

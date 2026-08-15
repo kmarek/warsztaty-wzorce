@@ -7,14 +7,11 @@ using Testerzy.Trainings.Romanum.Framework.Configuration.Models;
 
 namespace Testerzy.Trainings.Romanum.Api.Tests.Contacts;
 
-public class AddContactTests : BaseApiTest
+public class AddContactTests : ContactTestsBase
 {
     [Test]
     public void Verify_ContactCanBeAdded()
     {
-        var account = Settings.TestData.Accounts.First(u => u.Type == AccountType.Administrator);
-        var tokens = OAuthTokenClient.GetTokenByPassword(account.Username, account.Password);
-
         RestRequest request = new("/api/v1/contacts", Method.Post);
         PostContactRequest requestBody = new()
         {
@@ -28,7 +25,7 @@ public class AddContactTests : BaseApiTest
             AgeGroupIds = []
         };
         request.AddJsonBody<PostContactRequest>(requestBody);
-        AddAuthHeaders(request, tokens.AccessToken);
+        AddAuthHeaders(request, AdminAccessToken);
 
         RestResponse<ContactResponse> response = RestClient.Execute<ContactResponse>(request);
         Console.WriteLine(response.Content);
@@ -37,6 +34,7 @@ public class AddContactTests : BaseApiTest
         ContactResponse? contact = response.Data;
         contact.Should().NotBeNull();
         contact!.Id.Should().NotBeNullOrEmpty();
+        TrackContactForCleanup(contact.Id);
         contact.Kind.Should().Be(requestBody.Kind);
         contact.FirstName.Should().Be(requestBody.FirstName);
         contact.LastName.Should().Be(requestBody.LastName);
