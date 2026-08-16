@@ -50,6 +50,13 @@ public sealed class OAuthTokenClient
             .AddParameter("client_secret", _clientSecret)
             .AddParameter("refresh_token", refreshToken);
 
+        if (!string.IsNullOrEmpty(_bypassKey))
+        {
+            Console.WriteLine($"Using bypass key.");
+            request.AddHeader("x-vercel-protection-bypass", _bypassKey);
+            request.AddHeader("x-vercel-set-bypass-cookie", true);
+        }
+
         return Execute(request);
     }
 
